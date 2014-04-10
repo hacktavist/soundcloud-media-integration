@@ -19,13 +19,8 @@ class SoundcloudApp < Sinatra::Base
     config_file "config/settings.yml"
   end
 
-  get '/' do
-    "route created"
-  end
-
-
   # initializer route
-  get 'https://soundcloudapp.dev/' do
+  get '/' do
     # flash[:notice] = "testing flash"
 
     #session['client_id'] = params[:client_id];
