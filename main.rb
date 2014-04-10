@@ -29,13 +29,12 @@ class SoundcloudApp < Sinatra::Base
     client = SoundCloud.new({
       :client_id     => '67925ad867fdc95e902b15afef1a6c81',
       :client_secret => '17927f3ba98bb0eec77ae19c61ded8f9',
-      :username      => 'devops@gooddonegreat.com',
-      :password      => 'opensaysm3'
+      :redirect_uri => 'https://www.google.com/'
     })
+redirect client.authorize_url()
 
     # print logged in username
     puts ("#{client.get('/me').username}")
-
     #redirect '/list/1'
   end
 end
