@@ -19,17 +19,40 @@ class SoundcloudApp < Sinatra::Base
     config_file "config/settings.yml"
   end
 
+  get '/' do
+    # flash[:notice] = "testing flash"
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+      })
 
-  # initializer route
+      name = client.get('/me').username;
+
+      erb :index, :locals => {:username => name}
+
+   end
+
   get '/:client_id/:client_secret/:access_token' do
-    #create client object with access token
-    client = SoundCloud.new(
-      :client_id => params[:client_id], 
-      :client_secret => params[:client_secret],
-      :access_token => params[:access_token]) # Our awesome access token!
+    session['cid'] = params[:client_id];
+    session['cs'] = params[:client_secret];
+    session['at'] = params[:access_token];
 
-    # updating the users profile description
-    client.put("/me", :user => {:description => "Your description goes here!"})
-
+    redirect '/'
   end
+
+  # Delete a track.
+  ##########################################################
+  get '/delete:trackId' do
+
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+    })
+    trackId = params[:trackId]
+    client.delete('/me/tracks/' + trackId)
+    flash[:notice] = "The photo has been deleted."
+  end
+
 end
