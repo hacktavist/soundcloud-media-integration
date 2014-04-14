@@ -34,6 +34,22 @@ class SoundcloudApp < Sinatra::Base
 
    end
 
+   get '/newUpload' do
+     erb :newUpload
+   end
+
+   post '/:title/:upload' do
+     client = SoundCloud.new({
+       :client_id => session['cid'],
+       :client_secret => session['cs'],
+       :access_token => session['at']
+       })
+     track = client.post('/tracks', :track => {
+       :title => params[:title],
+       :asset_data => File.new(params[:upload])
+       })
+     erb :viewUpload
+   end
   get '/:client_id/:client_secret/:access_token' do
     session['cid'] = params[:client_id];
     session['cs'] = params[:client_secret];
