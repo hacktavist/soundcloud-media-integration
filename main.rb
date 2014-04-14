@@ -3,6 +3,7 @@ require "sinatra/config_file"
 require 'soundcloud'
 require 'hashie'
 require 'httmultiparty'
+require 'certified'
 
 
 class SoundcloudApp < Sinatra::Base
@@ -18,39 +19,43 @@ class SoundcloudApp < Sinatra::Base
     config_file "config/settings.yml"
   end
 
-  # root route (really for testing only)
-  get '/list' do
-    # flash[:notice] = "testing flash"
-    #haml :root
-  end
-
   # initializer route
-  get '/:client_id/:client_secret/:username/:password' do
+  get '/' do
     # flash[:notice] = "testing flash"
-
-    session['client_id'] = params[:client_id];
-    session['client_secret'] = params[:client_secret];
-    session['username'] = params[:username];
-    session['password'] = params[:password];
-
-
-    # register a new client, which will exchange the username, password for an access_token
-    # NOTE: the SoundCloud API Docs advise not to use the user credentials flow in a web app.
-    # In any case, never store the password of a user.
     client = SoundCloud.new({
-      :client_id     => '67925ad867fdc95e902b15afef1a6c81',
-      :client_secret => '17927f3ba98bb0eec77ae19c61ded8f9',
-      :username      => 'devops@gooddonegreat.com',
-      :password      => 'opensaysm3'
-    })
-    # print logged in username
-    puts client.get('/me').username
-  end
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+      })
 
-  # View photos attached to application (main view)
-  ############################################################
-  get '/list' do
-    "route created"
-  end
+      name = client.get('/me').username;
 
+      erb :index, :locals => {:username => name}
+
+   end
+
+  get '/:client_id/:client_secret/:access_token' do
+    session['cid'] = params[:client_id];
+    session['cs'] = params[:client_secret];
+    session['at'] = params[:access_token];
+
+    redirect '/'
+    # session['user_id'] = params[:user_id].to_s;
+    # session['visitor_id'] = 'u' + params[:visitor_id].to_s;
+    # session['app_id'] = 'a' + params[:app_id].to_s;
+    # client = SoundCloud.new({
+    #   :client_id     => '67925ad867fdc95e902b15afef1a6c81',
+    #   :client_secret => '17927f3ba98bb0eec77ae19c61ded8f9',
+    #   :access_token => params[:access_token]
+    #   })
+    #
+    # track = client.post('/tracks', :track => {
+    #    :title => "Crap Track",
+    #    :asset_data => File.new('audio.mp3')
+    #   })
+    #   puts track.permalink_url
+    #puts client.get('/me').username
+    # updating the users profile description
+    #client.put("/me", :user => {:description => "Your description goes here."})
+  end
 end

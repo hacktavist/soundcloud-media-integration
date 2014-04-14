@@ -1,4 +1,4 @@
-.DS_Store
+*.DS_Store
 config/settings.yml
 settings.yml
 log/newrelic_agent.log

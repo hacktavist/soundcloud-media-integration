@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     backports (3.6.0)
+    certified (0.1.1)
     formkeeper (0.0.13)
       hpricot
       rack
@@ -54,6 +55,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  certified
   haml
   hashie
   httmultiparty
