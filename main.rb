@@ -23,18 +23,19 @@ class SoundcloudApp < Sinatra::Base
   get '/' do
     # flash[:notice] = "testing flash"
 
-    #session['client_id'] = params[:client_id];
-    #session['client_secret'] = params[:client_secret];
 
+   end
+
+  get '/:client_id/:client_secret/:access_token' do
+    #create client object with access token
+    'redirect page'
     client = SoundCloud.new({
       :client_id     => '67925ad867fdc95e902b15afef1a6c81',
       :client_secret => '17927f3ba98bb0eec77ae19c61ded8f9',
-      :redirect_uri => 'https://www.google.com/'
-    })
-redirect client.authorize_url()
+      :access_token => params[:access_token]
+      })
 
-    # print logged in username
-    puts ("#{client.get('/me').username}")
-    #redirect '/list/1'
+    # updating the users profile description
+    client.put("/me", :user => {:description => "Your description goes here."})
   end
 end
