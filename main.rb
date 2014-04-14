@@ -22,20 +22,40 @@ class SoundcloudApp < Sinatra::Base
   # initializer route
   get '/' do
     # flash[:notice] = "testing flash"
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+      })
 
+      name = client.get('/me').username;
+
+      erb :index, :locals => {:username => name}
 
    end
 
   get '/:client_id/:client_secret/:access_token' do
-    #create client object with access token
-    'redirect page'
-    client = SoundCloud.new({
-      :client_id     => '67925ad867fdc95e902b15afef1a6c81',
-      :client_secret => '17927f3ba98bb0eec77ae19c61ded8f9',
-      :access_token => params[:access_token]
-      })
+    session['cid'] = params[:client_id];
+    session['cs'] = params[:client_secret];
+    session['at'] = params[:access_token];
 
+    redirect '/'
+    # session['user_id'] = params[:user_id].to_s;
+    # session['visitor_id'] = 'u' + params[:visitor_id].to_s;
+    # session['app_id'] = 'a' + params[:app_id].to_s;
+    # client = SoundCloud.new({
+    #   :client_id     => '67925ad867fdc95e902b15afef1a6c81',
+    #   :client_secret => '17927f3ba98bb0eec77ae19c61ded8f9',
+    #   :access_token => params[:access_token]
+    #   })
+    #
+    # track = client.post('/tracks', :track => {
+    #    :title => "Crap Track",
+    #    :asset_data => File.new('audio.mp3')
+    #   })
+    #   puts track.permalink_url
+    #puts client.get('/me').username
     # updating the users profile description
-    client.put("/me", :user => {:description => "Your description goes here."})
+    #client.put("/me", :user => {:description => "Your description goes here."})
   end
 end
