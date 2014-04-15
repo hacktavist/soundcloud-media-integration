@@ -39,8 +39,8 @@ class SoundcloudApp < Sinatra::Base
    end
 
    get '/welcome' do
-     erb :welcome, :locals => {:username => name}
      name = client.get('/me').full_name;
+     erb :welcome, :locals => {:username => name}
    end
 
    post '/upload' do
