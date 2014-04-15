@@ -39,6 +39,11 @@ class SoundcloudApp < Sinatra::Base
    end
 
    get '/welcome' do
+     client = SoundCloud.new({
+       :client_id => session['cid'],
+       :client_secret => session['cs'],
+       :access_token => session['at']
+       })
      name = client.get('/me').full_name;
      erb :welcome, :locals => {:username => name}
    end
