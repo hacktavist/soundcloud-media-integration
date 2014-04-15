@@ -46,11 +46,15 @@ class SoundcloudApp < Sinatra::Base
        })
      tmpfile = ""
      tmpfile = params[:file][:tempfile]
+     username = client.get('/me').username;
+
      #tmpfile = tmpfile.to_s
      track = client.post('/tracks', :track => {
        :title => params[:title],
-       :asset_data => File.new(tmpfile)
+       :asset_data => File.new(tmpfile),
+       :tag_list => username.to_s
        })
+       puts track.tag_list
      erb :viewUpload
    end
   get '/:client_id/:client_secret/:access_token' do
