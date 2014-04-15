@@ -38,6 +38,10 @@ class SoundcloudApp < Sinatra::Base
      erb :newUpload
    end
 
+   get '/welcome' do
+     erb :welcome
+   end
+
    post '/upload' do
      client = SoundCloud.new({
        :client_id => session['cid'],
@@ -67,7 +71,7 @@ class SoundcloudApp < Sinatra::Base
     session['cs'] = params[:client_secret];
     session['at'] = params[:access_token];
 
-    redirect '/'
+    redirect '/welcome'
     # session['user_id'] = params[:user_id].to_s;
     # session['visitor_id'] = 'u' + params[:visitor_id].to_s;
     # session['app_id'] = 'a' + params[:app_id].to_s;
