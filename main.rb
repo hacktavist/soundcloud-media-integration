@@ -4,6 +4,7 @@ require 'soundcloud'
 require 'hashie'
 require 'httmultiparty'
 require 'certified'
+require 'json'
 
 
 class SoundcloudApp < Sinatra::Base
@@ -17,6 +18,7 @@ class SoundcloudApp < Sinatra::Base
     set :session_secret, "Session Secret for shotgun development"
     set :protection, :except => :frame_options
     config_file "config/settings.yml"
+    #set :person
   end
 
   # initializer route
@@ -28,6 +30,7 @@ class SoundcloudApp < Sinatra::Base
       :access_token => session['at']
       })
 
+    #settings.person = client
       name = client.get('/me').username;
 
       erb :index, :locals => {:username => name}
@@ -58,6 +61,10 @@ class SoundcloudApp < Sinatra::Base
      tmpfile = params[:file][:tempfile];
      username = client.get('/me').username;
      fullName = client.get('/me').full_name;
+     ##############################################################
+     #need to programatically get the gdgUserID and applicationID #
+     #this just shows the basic format of tagging                 #
+     ##############################################################
      testingStringNum = "2222222";
      gdgUserID = "gdg:currentVisitorID="+testingStringNum;
      applicationID = "gdg:applicationID="+testingStringNum;
@@ -66,18 +73,46 @@ class SoundcloudApp < Sinatra::Base
      #tmpfile = tmpfile.to_s
      track = client.post('/tracks', :track => {
        :title => params[:title],
+       :description => params[:descr],
        :asset_data => File.new(tmpfile),
+       :sharing => "private",
        :tag_list => tagListString
        })
-       puts track.tag_list
+       #puts track.tag_list
 
-       @trackList = client.get('/tracks', :limit => 1);
-       puts @trackList
+
      redirect '/viewUpload'
    end
 
   get '/viewUpload' do
-    #erb :viewUpload
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+      })
+
+    tags = ["gdg:currentVisitorID=2222222"];
+    trackListCall = client.get('/me/tracks');
+    #@trackList =  trackListCall.to_json
+    @trackList = JSON.parse((trackListCall.to_json));
+    erb :viewUpload
+  end
+  get '/tracks/:id' do
+    erb :editTrack, :locals => {:id => params[:id]}
+  end
+  post '/edit/track' do
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+      })
+      puts params[:id]
+      track = client.get('/track/'+params[:id])
+
+      client.put(track.uri, :track => {
+         :title => params[:title],
+         :description => params[:descr]
+        })
   end
   get '/:client_id/:client_secret/:access_token' do
     session['cid'] = params[:client_id];
