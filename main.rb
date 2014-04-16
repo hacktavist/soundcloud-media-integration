@@ -70,8 +70,15 @@ class SoundcloudApp < Sinatra::Base
        :tag_list => tagListString
        })
        puts track.tag_list
-     erb :viewUpload
+
+       @trackList = client.get('/tracks', :limit => 1);
+       puts @trackList
+     redirect '/viewUpload'
    end
+
+  get '/viewUpload' do
+    #erb :viewUpload
+  end
   get '/:client_id/:client_secret/:access_token' do
     session['cid'] = params[:client_id];
     session['cs'] = params[:client_secret];
