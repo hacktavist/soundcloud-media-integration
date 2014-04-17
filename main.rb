@@ -97,8 +97,10 @@ class SoundcloudApp < Sinatra::Base
     @trackList = JSON.parse((trackListCall.to_json));
     erb :viewUpload
   end
-  get '/tracks/:id' do
-    erb :editTrack, :locals => {:id => params[:id]}
+  get '/tracks/:id/:title/:description' do
+    erb :editTrack, :locals => {:id => params[:id],
+                                :title => params[:title],
+                                :description => params[:description]}
   end
   post '/edit/track' do
     client = SoundCloud.new({
@@ -106,13 +108,15 @@ class SoundcloudApp < Sinatra::Base
       :client_secret => session['cs'],
       :access_token => session['at']
       })
-      puts params[:id]
-      track = client.get('/track/'+params[:id])
+      id = params[:id].to_s
+      puts id
+      track = client.get('/tracks/'+id)
 
       client.put(track.uri, :track => {
          :title => params[:title],
          :description => params[:descr]
         })
+       redirect '/viewUpload'
   end
   get '/:client_id/:client_secret/:access_token' do
     session['cid'] = params[:client_id];
