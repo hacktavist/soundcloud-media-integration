@@ -9,8 +9,8 @@
 <form action="/edit/track" method="POST" enctype="multipart/form-data">
   <h1>Edit Track</h1>
   <h2>Upload</h2>
-  <input type="text" name="title" id="title" value="Enter Title Here" /><br>
-  <input type="text" name="descr" id="descr" value="Enter Description Here" /><br>
+  <input type="text" name="title" id="title" value="<%=title%>" /><br>
+  <input type="text" name="descr" id="descr" value="<%=description%>" /><br>
   <input type="hidden" name="id" id="id" value="<%=id%>" />
   <input type="submit" value="Upload" />
 </form>

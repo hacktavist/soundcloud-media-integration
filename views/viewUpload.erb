@@ -36,7 +36,7 @@ text-align:left;
       <td><%= track['description'] %></td>
       <td><%= track['id'] %></td>
       <td><%= track['user']['id'] %></td>
-      <td><a href="/tracks/<%=track['id']%>" class="btn">Edit</a></td>
+      <td><a href="/tracks/<%=track['id']%>/<%=track['title']%>/<%=track['description']%>">Edit</a></td>
     </tr>
   </tbody>
 </table>
