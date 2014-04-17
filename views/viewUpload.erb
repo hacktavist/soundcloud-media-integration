@@ -1,1 +1,45 @@
+<html>
+<head>
+<style>
+table,th,td
+{
+border:1px solid black;
+border-collapse:collapse;
+}
+th,td
+{
+padding:5px;
+}
+th
+{
+text-align:left;
+}
+</style>
+</head>
+<body>
 <h1>Uploads</h1>
+<% @trackList.each do |track| %>
+
+<table style="width: 300px;">
+  <thead>
+    <th>Username</th>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Track ID</th>
+    <th>UserID</th>
+    <th>Action</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= track['user']['username'] %></td>
+      <td><%= track['title'] %></td>
+      <td><%= track['description'] %></td>
+      <td><%= track['id'] %></td>
+      <td><%= track['user']['id'] %></td>
+      <td><a href="/tracks/<%=track['id']%>/<%=track['title']%>/<%=track['description']%>">Edit</a></td>
+    </tr>
+  </tbody>
+</table>
+<% end %>
+</body>
+</html>
