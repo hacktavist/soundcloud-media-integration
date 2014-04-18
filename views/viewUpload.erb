@@ -37,6 +37,7 @@ text-align:left;
       <td><%= track['id'] %></td>
       <td><%= track['user']['id'] %></td>
       <td><a href="/tracks/<%=track['id']%>/<%=track['title']%>/<%=track['description']%>">Edit</a></td>
+      <td><a><audio controls><source src="<%= track['stream_url'] %>"></audio></a></td>
     </tr>
   </tbody>
 </table>
