@@ -108,10 +108,20 @@ class SoundcloudApp < Sinatra::Base
 
       puts stream_url.location
   end
-  get '/tracks/:id/:title/:description' do
+  get '/tracks/edit/:id/:title/:description' do
     erb :editTrack, :locals => {:id => params[:id],
                                 :title => params[:title],
                                 :description => params[:description]}
+  end
+  get '/tracks/delete/:id' do
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+      })
+
+    client.delete('/tracks/' + params[:id]);
+    redirect '/viewUpload'
   end
   post '/edit/track' do
     client = SoundCloud.new({
