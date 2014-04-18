@@ -175,21 +175,8 @@ class SoundcloudApp < Sinatra::Base
     session['at'] = params[:access_token];
 
     redirect '/'
->>>>>>> e4c836bdaa13c528809ebac27f0948167f3e159c
+
   end
 
-  # Delete a track.
-  ##########################################################
-  get '/delete:trackId' do
-
-    client = SoundCloud.new({
-      :client_id => session['cid'],
-      :client_secret => session['cs'],
-      :access_token => session['at']
-    })
-    trackId = params[:trackId]
-    client.delete('/me/tracks/' + trackId)
-    flash[:notice] = "The photo has been deleted."
-  end
-
+  
 end
