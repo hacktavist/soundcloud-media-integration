@@ -21,7 +21,9 @@ class SoundcloudApp < Sinatra::Base
     #set :person
   end
 
+
   # initializer route
+
   get '/' do
     # flash[:notice] = "testing flash"
     client = SoundCloud.new({
@@ -29,6 +31,7 @@ class SoundcloudApp < Sinatra::Base
       :client_secret => session['cs'],
       :access_token => session['at']
       })
+
 
     #settings.person = client
       name = client.get('/me').username;
@@ -97,10 +100,31 @@ class SoundcloudApp < Sinatra::Base
     @trackList = JSON.parse((trackListCall.to_json));
     erb :viewUpload
   end
-  get '/tracks/:id/:title/:description' do
+  get 'play/:id' do
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+      })
+      track = client.get('/tracks/'+params[:id]);
+      stream_url = client.get(track.uri, :allow_redirects => false)
+
+      puts stream_url.location
+  end
+  get '/tracks/edit/:id/:title/:description' do
     erb :editTrack, :locals => {:id => params[:id],
                                 :title => params[:title],
                                 :description => params[:description]}
+  end
+  get '/tracks/delete/:id' do
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+      })
+
+    client.delete('/tracks/' + params[:id]);
+    redirect '/viewUpload'
   end
   post '/edit/track' do
     client = SoundCloud.new({
@@ -141,5 +165,18 @@ class SoundcloudApp < Sinatra::Base
     #puts client.get('/me').username
     # updating the users profile description
     #client.put("/me", :user => {:description => "Your description goes here."})
+
+
+   end
+
+  get '/:client_id/:client_secret/:access_token' do
+    session['cid'] = params[:client_id];
+    session['cs'] = params[:client_secret];
+    session['at'] = params[:access_token];
+
+    redirect '/'
+
   end
+
+  
 end
