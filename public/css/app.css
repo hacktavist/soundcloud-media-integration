@@ -16,7 +16,7 @@ body {
   vertical-align: bottom;
   z-index:10000;
 }
-.btn-group .btn-primary, .btn-group .btn-success {
+.btn-group .btn-primary, .btn-group .btn-success, .btn-group .btn-info {
   padding-bottom: 12px;
 }
 .container {
