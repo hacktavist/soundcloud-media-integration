@@ -102,7 +102,7 @@ class SoundcloudApp < Sinatra::Base
     puts @trackList;
 
     @totalTracks = @trackList.length
-    erb :viewUpload 
+    erb :viewUpload
   end
   get '/play/:id' do
     client = SoundCloud.new({
@@ -147,39 +147,14 @@ class SoundcloudApp < Sinatra::Base
         })
        redirect '/viewUpload'
   end
-  get '/:client_id/:client_secret/:access_token' do
-    session['cid'] = params[:client_id];
-    session['cs'] = params[:client_secret];
-    session['at'] = params[:access_token];
 
-    redirect '/welcome'
-    # session['user_id'] = params[:user_id].to_s;
-    # session['visitor_id'] = 'u' + params[:visitor_id].to_s;
-    # session['app_id'] = 'a' + params[:app_id].to_s;
-    # client = SoundCloud.new({
-    #   :client_id     => '67925ad867fdc95e902b15afef1a6c81',
-    #   :client_secret => '17927f3ba98bb0eec77ae19c61ded8f9',
-    #   :access_token => params[:access_token]
-    #   })
-    #
-    # track = client.post('/tracks', :track => {
-    #    :title => "Crap Track",
-    #    :asset_data => File.new('audio.mp3')
-    #   })
-    #   puts track.permalink_url
-    #puts client.get('/me').username
-    # updating the users profile description
-    #client.put("/me", :user => {:description => "Your description goes here."})
-
-
-   end
 
   get '/:client_id/:client_secret/:access_token' do
     session['cid'] = params[:client_id];
     session['cs'] = params[:client_secret];
     session['at'] = params[:access_token];
 
-    redirect '/'
+    redirect '/viewUpload'
 
   end
 
