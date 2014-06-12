@@ -96,18 +96,23 @@ class SoundcloudApp < Sinatra::Base
 
     tags = ["gdg:currentVisitorID=2222222"];
     trackListCall = client.get('/me/tracks');
-    #@trackList =  trackListCall.to_json
+    @trackList =  trackListCall.to_json
+    #puts @trackList;
     @trackList = JSON.parse((trackListCall.to_json));
-    erb :viewUpload
+    puts @trackList;
+
+    @totalTracks = @trackList.length
+    erb :viewUpload 
   end
-  get 'play/:id' do
+  get '/play/:id' do
     client = SoundCloud.new({
       :client_id => session['cid'],
       :client_secret => session['cs'],
       :access_token => session['at']
       })
+
       track = client.get('/tracks/'+params[:id]);
-      stream_url = client.get(track.uri, :allow_redirects => false)
+      stream_url = client.get(track.stream_url, :allow_redirects => true);
 
       puts stream_url.location
   end
@@ -178,5 +183,5 @@ class SoundcloudApp < Sinatra::Base
 
   end
 
-  
+
 end
