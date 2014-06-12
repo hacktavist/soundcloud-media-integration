@@ -96,10 +96,13 @@ class SoundcloudApp < Sinatra::Base
 
     tags = ["gdg:currentVisitorID=2222222"];
     trackListCall = client.get('/me/tracks');
-    #@trackList =  trackListCall.to_json
+    @trackList =  trackListCall.to_json
+    #puts @trackList;
     @trackList = JSON.parse((trackListCall.to_json));
+    puts @trackList;
+
     @totalTracks = @trackList.length
-    erb :viewUpload
+    erb :viewUpload 
   end
   get '/play/:id' do
     client = SoundCloud.new({
