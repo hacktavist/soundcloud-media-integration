@@ -1,0 +1,39 @@
+<html>
+
+<head>
+  <!-- jQuery UI -->
+  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+  <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="/css/app.css">
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="col-md-6 col-md-offset-3">
+        <h3 class="alert">
+          <a href="/viewUpload">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+          </a>
+          View Sound
+          <span class="glyphicon glyphicon-music"></span>
+        </h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="row-fluid">
+    <div class="col-md-6 col-md-offset-3">
+      <div><h4><%= title %></h4>
+        <img src="/img/default_avatar.jpg" style="border:1px solid black;border-radius:5px;height:160px;width:160px;" />
+        <p><%= description %></p>
+        <audio controls><source src="<%= @trackStream %>?client_id=<%= session['cid'] %>&secret_token=<%= @trackSToken %>"></audio>
+      </div>
+    </div>
+  </div>
+  <!-- jQuery -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <!--<script type="text/javascript" src="js/recorder.js"></script>-->
+</body>
+
+</html>
