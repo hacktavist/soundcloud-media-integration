@@ -24,10 +24,11 @@ function hasMediaStopped(controlsForMedia, playPauseButton){
 $(document).ready(function() {
 
   $('#slickcontainer').slick({
+    dots: true,
+    infinite: false,
+    speed: 300,
     slidesToShow: 3,
     slidesToScroll: 1,
-    swipe: false,
     arrows: true
-  });
-
+  })
 });
