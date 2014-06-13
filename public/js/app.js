@@ -19,3 +19,16 @@ function hasMediaStopped(controlsForMedia, playPauseButton){
     playPauseButton.removeClass("glyphicon-pause").addClass("glyphicon-play-circle");
   });
 }
+
+
+$(document).ready(function() {
+
+  $('#slickcontainer').slick({
+    dots: true,
+    infinite: true,
+    speed: 300,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    arrows: true
+  })
+});

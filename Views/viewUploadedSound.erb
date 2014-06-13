@@ -15,7 +15,7 @@
           <a href="/viewUpload">
             <i class="glyphicon glyphicon-chevron-left"></i>
           </a>
-          Edit Sound
+          View Sound
           <span class="glyphicon glyphicon-music"></span>
         </h3>
       </div>
@@ -24,25 +24,11 @@
 
   <div class="row-fluid">
     <div class="col-md-6 col-md-offset-3">
-
-
-      <form action="/edit/track" method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="title">Title</label>
-          <input class="form-control" type="text" name="title" id="title" value="<%=title%>" />
-        </div>
-        <div class="form-group">
-          <label for="descr">Description</label>
-          <textarea class="form-control" rows="3" type="text" name="descr" id="descr"><%=description%></textarea>
-        </div>
-        <div class="form-group">
-          <label for="art">Sound Image</label>
-          <input id="art" name="art" type="file" />
-        </div>
-        </br>
-        <input type="hidden" name="id" id="id" value="<%=id%>" />
-        <input class="btn btn-info btn-large" type="submit" value="Save" />
-      </form>
+      <div><h4><%= title %></h4>
+        <img src="/img/default_avatar.jpg" style="border:1px solid black;border-radius:5px;height:160px;width:160px;" />
+        <p><%= description %></p>
+        <audio controls><source src="<%= @trackStream %>?client_id=<%= session['cid'] %>&secret_token=<%= @trackSToken %>"></audio>
+      </div>
     </div>
   </div>
   <!-- jQuery -->
