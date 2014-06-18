@@ -1,6 +1,7 @@
 <html>
 
 <head>
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
   <link rel="stylesheet" type="text/css" href="/css/app.css">
   <link rel="stylesheet" type="text/css" href="/css/slick.css" />
@@ -8,7 +9,6 @@
 
 <body>
   <h1>Uploads</h1>
-
   <a class="btn btn-info" href="/newUpload">New Upload</a>
   <br>
   <br>
@@ -23,6 +23,9 @@
       <% if @totalTracks>0 %>
         <div id="slickcontainer">
           <% @trackList.each do |track| %>
+          <%if track['tag_list'] == session['user_tag'] %>
+
+
 
 
 
@@ -37,12 +40,20 @@
                   <br>
                   <div class="btnContainer">
                     <div class="btn-group">
+<i class="fa fa-volume-up volumeUp"></i>
+<i class="fa fa-volume-down volumeDown"></i>
+                      <span id="playSound" onclick="playMedia($(this))">
+                        <i class="fa fa-5x fa-play-circle-o overAvatar" style="cursor:pointer"></i>
 
-                      <img src="/img/default_avatar.jpg" style="border:1px solid black;border-radius:5px;height:160px;width:160px;">
+                        <audio>
+                          <source src="<%= track['stream_url'] %>?client_id=<%= session['cid'] %>&secret_token=<%= track['secret_token'] %>">
+                        </audio>
+                        <img src="/img/default_avatar.jpg" style="border:1px solid black;border-radius:5px;height:160px;width:160px;">
 
-                      <a class="btn btn-primary" href='/tracks/edit/<%=track['id']%>/<%=track['title']%>/<%=track['description']%>'><span class="glyphicon glyphicon-pencil"></span></a>
-                      <a class="btn btn-success" href='/tracks/view/<%=track['id']%>/<%=track['title']%>/<%=track['description']%>'><span class="glyphicon glyphicon-music"></span></a>
-                      <a id="playSound" class="btn btn-info" onclick="playMedia($(this));"><span class="glyphicon glyphicon-play-circle"><audio><source src="<%= track['stream_url'] %>?client_id=<%= session['cid'] %>&secret_token=<%= track['secret_token'] %>"></audio></span></a>
+                          </span>
+
+                      <a class="btn btn-primary" style="border-top-left-radius:4px; border-bottom-left-radius:4px;" href='/tracks/edit/<%=track['id']%>'><span class="glyphicon glyphicon-pencil"></span></a>
+                      <a class="btn btn-success" href='/tracks/view/<%=track['id']%>'><span class="glyphicon glyphicon-music"></span></a>
                       <button class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-remove"></span>
                         <span class="caret"></span>
@@ -50,17 +61,16 @@
 
                       <ul class="dropdown-menu" role="menu">
                         <li>
-                          <a onclick='return confirm("Are you sure you want to delete this sound?")' href='/tracks/delete/<%=track['id']%>'>Delete</li></a>
+                          <a data-toggle="modal" data-target="#myModal" >Delete</a>
                         </li>
                       </ul>
                     </div>
                   </div>
             </div>
             <% end %>
+            <% end %>
         </div>
         <% end %>
-
-
 
 
 

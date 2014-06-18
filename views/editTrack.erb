@@ -2,6 +2,7 @@
 
 <head>
   <!-- jQuery UI -->
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
   <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
   <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
   <link rel="stylesheet" type="text/css" href="/css/app.css">
@@ -13,7 +14,7 @@
       <div class="col-md-6 col-md-offset-3">
         <h3 class="alert">
           <a href="/viewUpload">
-            <i class="glyphicon glyphicon-chevron-left"></i>
+            <i id="backButton" class="fa fa-chevron-left"></i>
           </a>
           Edit Sound
           <span class="glyphicon glyphicon-music"></span>
@@ -29,18 +30,18 @@
       <form action="/edit/track" method="POST" enctype="multipart/form-data">
         <div class="form-group">
           <label for="title">Title</label>
-          <input class="form-control" type="text" name="title" id="title" value="<%=title%>" />
+          <input class="form-control" type="text" name="title" id="title" value="<%=@track['title']%>" />
         </div>
         <div class="form-group">
           <label for="descr">Description</label>
-          <textarea class="form-control" rows="3" type="text" name="descr" id="descr"><%=description%></textarea>
+          <textarea class="form-control" rows="3" type="text" name="descr" id="descr"><%=@track['description']%></textarea>
         </div>
         <div class="form-group">
           <label for="art">Sound Image</label>
           <input id="art" name="art" type="file" />
         </div>
         </br>
-        <input type="hidden" name="id" id="id" value="<%=id%>" />
+        <input type="hidden" name="id" id="id" value="<%=@id%>" />
         <input class="btn btn-info btn-large" type="submit" value="Save" />
       </form>
     </div>

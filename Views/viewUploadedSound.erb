@@ -24,9 +24,9 @@
 
   <div class="row-fluid">
     <div class="col-md-6 col-md-offset-3">
-      <div><h4><%= title %></h4>
+      <div><h4><%= @title %></h4>
         <img src="/img/default_avatar.jpg" style="border:1px solid black;border-radius:5px;height:160px;width:160px;" />
-        <p><%= description %></p>
+        <p><%= @description %></p>
         <audio controls><source src="<%= @trackStream %>?client_id=<%= session['cid'] %>&secret_token=<%= @trackSToken %>"></audio>
       </div>
     </div>
