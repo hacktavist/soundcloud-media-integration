@@ -50,8 +50,21 @@ class SoundcloudApp < Sinatra::Base
        :client_secret => session['cs'],
        :access_token => session['at']
        })
-     tmpfile = "";
-     tmpfile = params[:file][:tempfile];
+    form do
+      field :title, :present => true
+      field :descr, :present => true
+      field :file,   :present => true
+    end
+
+    if form.failed?
+      flash[:warning] = "You have not filled out ."
+      redirect '/newUpload';
+    else
+
+
+      tmpfile = params[:file][:tempfile]
+
+
      username = client.get('/me').username;
      fullName = client.get('/me').full_name;
      ##############################################################
@@ -63,7 +76,7 @@ class SoundcloudApp < Sinatra::Base
      applicationID = "gdg:applicationID="+testingStringNum;
      tagListString = gdgUserID+" "+applicationID;
 
-     #tmpfile = tmpfile.to_s
+
      track = client.post('/tracks', :track => {
        :title => params[:title],
        :description => params[:descr],
@@ -76,7 +89,7 @@ class SoundcloudApp < Sinatra::Base
 
      redirect '/viewUpload'
    end
-
+ end
   get '/viewUpload' do
     client = SoundCloud.new({
       :client_id => session['cid'],
@@ -91,25 +104,22 @@ class SoundcloudApp < Sinatra::Base
     @trackList = JSON.parse((trackListCall.to_json));
     puts @trackList;
 
+
+
     @totalTracks = @trackList.length
     erb :viewUpload
   end
-  get '/play/:id' do
+
+  get '/tracks/edit/:id' do
     client = SoundCloud.new({
       :client_id => session['cid'],
       :client_secret => session['cs'],
       :access_token => session['at']
       })
+      @id = params[:id];
+      @track = client.get('/tracks/'+@id.to_s);
 
-      track = client.get('/tracks/'+params[:id]);
-      stream_url = client.get(track.stream_url, :allow_redirects => true);
-
-      puts stream_url.location
-  end
-  get '/tracks/edit/:id/:title/:description' do
-    erb :editTrack, :locals => {:id => params[:id],
-                                :title => params[:title],
-                                :description => params[:description]}
+    erb :editTrack
   end
   get '/tracks/delete/:id' do
     client = SoundCloud.new({
@@ -137,32 +147,20 @@ class SoundcloudApp < Sinatra::Base
         })
        redirect '/viewUpload'
   end
-  get '/tracks/view/:id/:title/:description' do
+  get '/tracks/view/:id' do
     client = SoundCloud.new({
       :client_id => session['cid'],
       :client_secret => session['cs'],
       :access_token => session['at']
       })
-    @trackStream = ""
-    @trackSToken = ""
-    #puts params[:id]
-    trackListCall = client.get('/me/tracks');
-    @trackList =  trackListCall.to_json
-    # #puts @trackList;
-    @trackList = JSON.parse((trackListCall.to_json));
-    # puts @trackList;
-    @trackList.each do |track|
-      if params[:id].to_i === track['id'].to_i
-        #puts "not #{track['id']}".to_s + " #{params[:id]}".to_s
-        @trackStream = track['stream_url']
-        @trackSToken = track['secret_token']
-      end
-    end
-    erb :viewUploadedSound, :locals => {:id => params[:id],
-                                :title => params[:title],
-                                :description => params[:description],
-                                :soundArt => params[:soundArt]
-                              }
+    @id = params[:id]
+    @track = client.get('/tracks/'+@id)
+    @trackStream = @track['stream_url']
+    @trackSToken = @track['secret_token']
+    @title = @track['title']
+    @description = @track['description']
+
+    erb :viewUploadedSound
   end
 
 
@@ -170,10 +168,14 @@ class SoundcloudApp < Sinatra::Base
     session['cid'] = params[:client_id];
     session['cs'] = params[:client_secret];
     session['at'] = params[:access_token];
+    session['user_tag'] = "gdg:currentVisitorID=2222222";
+
+
 
     redirect '/viewUpload'
 
   end
+
 
 
 end

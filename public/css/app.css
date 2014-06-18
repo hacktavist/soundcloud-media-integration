@@ -20,7 +20,9 @@ body {
 .btn-group .btn-success,
 .btn-group .btn-info {
   padding-bottom: 12px;
+  width: 59px;
 }
+
 .container {
   width: 40%;
 }
@@ -82,6 +84,8 @@ li.media {
 #slickcontainer {
   background: #f1f1f1;
   margin-top: 20px;
+  margin-left: 50px;
+  margin-right: 50px;
 }
 .slick-track {
   margin-top: 30px;
@@ -130,6 +134,58 @@ li.media {
   font-style: italic;
 }
 input[type=file] {
+  display: inline;
+  /*margin-left: 200px;*/
+}
+
+#myError {
+  display: none;
+}
+
+.alert-danger-text {
+  text-align: left;
+  color: #a94442;
+}
+
+label {
   display: block;
-  margin-left: 200px;
+}
+
+.overAvatar {
+  color: rgba(0, 0, 0, 0.2);
+  display: block;
+  z-index: 99;
+  position: absolute;
+  top: 25%;
+  left: 31%;
+}
+
+.volumeUp{
+  color: rgba(0, 0, 0, 0.2);
+  display: block;
+  z-index: 99;
+  position: absolute;
+  top: 8%;
+  left: 80%;
+  font-size: 2em;
+}
+
+.volumeDown{
+  color: rgba(0, 0, 0, 0.2);
+  display: block;
+  z-index: 99;
+  position: absolute;
+  top: 60%;
+  left: 80%;
+  font-size: 2em;
+}
+
+.overAvatar:hover,
+.volumeUp:hover,
+.volumeDown:hover{
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.overAvatarHover {
+  color: rgba(0, 0, 0, 0.5);
 }
