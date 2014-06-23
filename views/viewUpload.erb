@@ -8,8 +8,18 @@
 </head>
 
 <body>
-  <h1>Uploads</h1>
-  <a class="btn btn-info" href="/newUpload">New Upload</a>
+  <h3>My Sounds <span class="glyphicon glyphicon-music"></span></h3>
+  <p style="margin-bottom:30px;width:70%;margin:0 auto;">Click Upload to upload a new sound and attach it to this application.  Click Choose to attach your previously-uploaded sounds to this application.</p>
+  <div class="upload-btn" style="display:block;text-align:center;margin-top:20px;">
+    <a class="btn btn-success btn-lg" href="/newUpload">
+      <i class="fa fa-2x fa-cloud-upload"></i><br>
+      Upload
+    </a>
+    <a class="btn btn-primary btn-lg" data-toggle="modal" data-target="#soundListModal">
+      <i class="fa fa-2x fa-list"></i><br>
+      Choose
+    </a>
+  </div>
   <br>
   <br>
 
@@ -23,7 +33,7 @@
       <% if @totalTracks>0 %>
         <div id="slickcontainer">
           <% @trackList.each do |track| %>
-          <%if track['tag_list'] == session['user_tag'] %>
+          <%if track['tag_list'] == session['user_app_tag'] %>
 
 
 
@@ -48,8 +58,11 @@
                         <audio>
                           <source src="<%= track['stream_url'] %>?client_id=<%= session['cid'] %>&secret_token=<%= track['secret_token'] %>">
                         </audio>
+                        <% if track['artwork_url'] != nil %>
+                        <img src="<%= track['artwork_url'] %>" style="border:1px solid black;border-radius:5px;height:160px;width:160px;">
+                        <% else %>
                         <img src="/img/default_avatar.jpg" style="border:1px solid black;border-radius:5px;height:160px;width:160px;">
-
+                        <% end %>
                           </span>
 
                       <a class="btn btn-primary" style="border-top-left-radius:4px; border-bottom-left-radius:4px;" href='/tracks/edit/<%=track['id']%>'><span class="glyphicon glyphicon-pencil"></span></a>
@@ -71,6 +84,60 @@
             <% end %>
         </div>
         <% end %>
+
+<div id="soundListModal" class="modal fade" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <a type="button" class="close" aria-hidden="true" data-dismiss="modal"> x</a>
+        <h3 id="myModalLabel" class="modal-title">Your Sound List</h3>
+      </div><!-- modal header -->
+      <div class="modal-body">
+        <div class="row">
+          <% if @totalTracks==0 %>
+            <div class="alert alert-warning">
+              <h3> You haven't uploaded any sounds yet!</h3>
+              <h5> Return to the main page and click the Upload button to upload new sounds</h5>
+            </div><!-- alert warning -->
+            <% end %>
+            <% if @totalTracks>0 %>
+              <small style="color:grey;">
+              <i>Please click on Sounds to attach/detach them to this application. Sounds highlighted in green with a checkbox will be attached to your application when you click "Update". Sounds not selected will be detached.</i>
+              <% @trackList.each do |track| %>
+              <%if track['tag_list'] == session['user_tag'] %>
+              <div class="row" style="margin-top:10px;height:200px;overflow-x:hidden;overflow-y:scroll;">
+
+                  <div class="col-sm-3 col-md-3 col-xs-6">
+                    <div class="thumbnail" id="<%=track['id']%>">
+                      <div class="sound-thumbnail">
+                        <i class="icon fa fa-4x fa-check-circle-o" style="margin-top:9px;"></i>
+                      </div><!-- sound-thumbnail -->
+                      <div class="caption">
+                        <h5><%= track['title'] %></h5>
+                        <p></p>
+                      </div><!-- caption div -->
+                    </div><!-- thumbnail -->
+                  </div><!-- col-sm-3 -->
+
+              </div><!-- row -->
+              <% end %>
+              <% end %>
+        </div><!-- row -->
+      </div><!-- modal body -->
+        <div class="modal-footer">
+          <a class="btn btn-danger" aria-hidden="true" data-dismiss="modal" type="button">Cancel</a>
+          <% if @totalTracks==0 %>
+            <a class="btn btn-info" id="attachSoundButton" disabled="true">Update</a>
+          <% else %>
+            <a class="btn btn-info" id="attachSoundButton">Update</a>
+          <% end %>
+        </div><!-- modal footer -->
+        <% end %>
+      </div><!-- modal content -->
+    </div><!-- modal dialog -->
+  </div><!-- list modal -->
+
+
 
 
 

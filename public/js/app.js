@@ -90,10 +90,15 @@ function validateUploadForm(){
 
 $(document).ready(function() {
   var uploadFormExists = $('#upload-form').length,
-      slickContainerExists = $('#slickcontainer').length;
+      slickContainerExists = $('#slickcontainer').length,
+      modalListExists = $('#soundListModal').length;
 
   if(uploadFormExists > 0){
     soundUploadSpinner();
+  }
+
+  if(modalListExists > 0){
+    //$('#soundListModal').hide();
   }
 
   if(slickContainerExists > 0){

@@ -25,18 +25,6 @@ class SoundcloudApp < Sinatra::Base
   # initializer route
 
   get '/' do
-    # flash[:notice] = "testing flash"
-    client = SoundCloud.new({
-      :client_id => session['cid'],
-      :client_secret => session['cs'],
-      :access_token => session['at']
-      })
-
-
-    #settings.person = client
-      name = client.get('/me').username;
-
-      erb :index, :locals => {:username => name}
 
    end
 
@@ -84,7 +72,7 @@ class SoundcloudApp < Sinatra::Base
        :sharing => "private",
        :tag_list => tagListString
        })
-       #puts track.tag_list
+       puts track.tag_list
 
 
      redirect '/viewUpload'
@@ -100,7 +88,7 @@ class SoundcloudApp < Sinatra::Base
     tags = ["gdg:currentVisitorID=2222222"];
     trackListCall = client.get('/me/tracks');
     @trackList =  trackListCall.to_json
-    #puts @trackList;
+    puts @trackList;
     @trackList = JSON.parse((trackListCall.to_json));
     puts @trackList;
 
@@ -138,13 +126,24 @@ class SoundcloudApp < Sinatra::Base
       :access_token => session['at']
       })
       id = params[:id].to_s
-      #puts id
+      puts id
       track = client.get('/tracks/'+id)
 
+      if params[:art] == nil
       client.put(track.uri, :track => {
          :title => params[:title],
          :description => params[:descr]
         })
+
+      else
+        temporary = params[:art][:tempfile]
+        client.put(track.uri, :track => {
+           :title => params[:title],
+           :description => params[:descr],
+           :artwork_data => File.new(temporary)
+          })
+      end
+
        redirect '/viewUpload'
   end
   get '/tracks/view/:id' do
@@ -169,13 +168,34 @@ class SoundcloudApp < Sinatra::Base
     session['cs'] = params[:client_secret];
     session['at'] = params[:access_token];
     session['user_tag'] = "gdg:currentVisitorID=2222222";
+    session['user_app_tag'] = session['user_tag'].to_s+" gdg:applicationID=1111111";
 
-
+    puts session['user_app_tag']
 
     redirect '/viewUpload'
 
   end
 
+  get '/attach/:soundId' do
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+      })
+    soundIds = params[:soundId].to_s
+      if soundIds.length > 0
+        attach = soundIds.split(",")
+        puts attach
+        attach.each do |id|
+          track = client.get('/tracks/'+id)
+          client.put(track.uri, :track => {
+             :tag_list => session['user_app_tag'].to_s
+            })
+        end #end loop
+      end #end if
 
+      redirect 'viewUpload'
+
+  end #end attach route
 
 end

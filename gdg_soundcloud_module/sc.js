@@ -7,7 +7,7 @@ function init_vimeo_iframe (mode, height) {
         applicationId = getURLParameter('id'),
         visitorId = current_visitor.id,
         iframe = $("<iframe height='" + height + "'></iframe>"),
-        container = $("<div class='flex-video widescreen'></div>"),
+        container = $("<div class='flex-sound widescreen'></div>"),
         // url = ["https://sinatra-blahaas.rhcloud.com",
         url = ["https://soundcloud-gdgqaas.rhcloud.com",
               cid,
@@ -19,7 +19,7 @@ function init_vimeo_iframe (mode, height) {
 
     url = url.join('/');
     container.appendTo('[name="SoundCloud Content Target"]');
-    iframe.prop('src', url).appendTo('.flex-video');
+    iframe.prop('src', url).appendTo('.flex-sound');
   });
 }
 
