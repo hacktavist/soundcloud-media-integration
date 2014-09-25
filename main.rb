@@ -44,7 +44,7 @@ class SoundcloudApp < Sinatra::Base
    end
 
    get '/newUpload' do
-     erb :newUpload
+     haml :newUpload
    end
 
    post '/upload' do
@@ -57,15 +57,6 @@ class SoundcloudApp < Sinatra::Base
      tmpfile = params[:file][:tempfile];
      username = client.get('/me').username;
      fullName = client.get('/me').full_name;
-     ##############################################################
-     #need to programatically get the gdgUserID and applicationID #
-     #this just shows the basic format of tagging                 #
-     ##############################################################
-    #  testingStringNum = "2222222";
-    #  gdgUserID = "gdg:currentVisitorID="+testingStringNum;
-    #  applicationID = "gdg:applicationID="+testingStringNum;
-    #  tagListString = gdgUserID+" "+applicationID;
-
 
     tagListString = "#{session[:visitor_id]} #{session[:req_id]}"
      #tmpfile = tmpfile.to_s
@@ -80,7 +71,7 @@ class SoundcloudApp < Sinatra::Base
      redirect '/viewUpload'
    end
 
-  get '/viewUpload' do
+  get '/index' do
     client = SoundCloud.new({
       :client_id => session['cid'],
       :client_secret => session['cs'],
@@ -95,7 +86,7 @@ class SoundcloudApp < Sinatra::Base
 
     puts @trackList
     @totalTracks = @trackList.length
-    erb :viewUpload
+    haml :index
   end
 
   get '/play/:id' do
@@ -179,7 +170,7 @@ class SoundcloudApp < Sinatra::Base
     session['req_id'] = "a" + params[:req_id];
     session['mode'] = params[:mode];
 
-    redirect '/viewUpload'
+    redirect '/index'
 
   end
 

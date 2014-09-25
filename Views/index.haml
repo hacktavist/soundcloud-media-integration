@@ -1,0 +1,37 @@
+%h1 Uploads
+%a.btn.btn-info{:href => "/newUpload"} New Upload
+%br/
+%br/
+
+- if @totalTracks == 0
+  .alert.alert-warning
+    %h3 You haven't attached any sounds yet!
+    %h5 Upload new sounds using the Upload button above, or attach previously-uploaded sounds by clicking the Choose button to view your sound library.
+
+- if @totalTracks > 0
+  #slickcontainer
+    - @trackList.each do |track|
+      .slickel
+        - if track['title'].length > 15
+          = track['title'][0..7] + "..."
+        - else
+          = track['title']
+        %br/
+        .btnContainer
+          .btn-group
+            %img{:src => "/img/default_avatar.jpg", :style => "border:1px solid black;border-radius:5px;height:160px;width:160px;"}
+            %a.btn.btn-primary{:href => "/tracks/edit/#{track['id']}"}
+              %span.glyphicon.glyphicon-pencil
+            %a.btn.btn-success{:href => "/tracks/view/#{track['id']}"}
+              %span.glyphicon.glyphicon-music
+            %a#playSound.btn.btn-info{:onclick => "playMedia($(this));"}
+              %span.glyphicon.glyphicon-play-circle
+                %audio
+                  %source{:src => "#{track['stream_url']}?client_id=#{session['cid']}&secret_token=#{track['secret_token']}"}
+            %button.btn.btn-danger.dropdown-toggle{"data-toggle" => "dropdown"}
+              %span.glyphicon.glyphicon-remove
+              %span.caret
+            %ul.dropdown-menu{:role => "menu"}
+              %li
+                %a{:href => "/tracks/delete/#{track['id']}", :onclick => "return confirm(\"Are you sure you want to delete this sound?\")"}
+                  Delete
