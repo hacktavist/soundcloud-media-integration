@@ -93,9 +93,11 @@ class SoundcloudApp < Sinatra::Base
 
     @trackList = @trackList.reject { |t| t['tag_list'] != "#{session[:visitor_id]} #{session[:req_id]}" }
 
+    puts @trackList
     @totalTracks = @trackList.length
     erb :viewUpload
   end
+
   get '/play/:id' do
     client = SoundCloud.new({
       :client_id => session['cid'],
@@ -108,10 +110,18 @@ class SoundcloudApp < Sinatra::Base
 
       puts stream_url.location
   end
-  get '/tracks/edit/:id/:title/:description' do
+  get '/tracks/edit/:id' do
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+    })
+
+    @track = client.get("/tracks/#{params[:id]}");
     erb :editTrack, :locals => {:id => params[:id],
-                                :title => params[:title],
-                                :description => params[:description]}
+                                :title => @track['title'],
+                                :description => @track['description']}
+
   end
   get '/tracks/delete/:id' do
     client = SoundCloud.new({
@@ -139,7 +149,7 @@ class SoundcloudApp < Sinatra::Base
         })
        redirect '/viewUpload'
   end
-  get '/tracks/view/:id/:title/:description' do
+  get '/tracks/view/:id' do
     client = SoundCloud.new({
       :client_id => session['cid'],
       :client_secret => session['cs'],
@@ -147,24 +157,17 @@ class SoundcloudApp < Sinatra::Base
       })
     @trackStream = ""
     @trackSToken = ""
-    #puts params[:id]
-    trackListCall = client.get('/me/tracks');
-    @trackList =  trackListCall.to_json
-    # #puts @trackList;
-    @trackList = JSON.parse((trackListCall.to_json));
-    # puts @trackList;
-    @trackList.each do |track|
-      if params[:id].to_i === track['id'].to_i
-        #puts "not #{track['id']}".to_s + " #{params[:id]}".to_s
-        @trackStream = track['stream_url']
-        @trackSToken = track['secret_token']
-      end
-    end
-    erb :viewUploadedSound, :locals => {:id => params[:id],
-                                :title => params[:title],
-                                :description => params[:description],
-                                :soundArt => params[:soundArt]
-                              }
+    trackListCall = client.get("/tracks/#{params[:id]}");
+    track =  JSON.parse(trackListCall.to_json);
+    @trackSToken = track['secret_token']
+    @trackStream = track['stream_url']
+    erb :viewUploadedSound,
+      :locals => {
+        :id => params[:id],
+        :title => track['title'],
+        :description => track['description'],
+        :soundArt => track['soundArt']
+      }
   end
 
 
