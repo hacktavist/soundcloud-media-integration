@@ -41,7 +41,7 @@
                       <img src="/img/default_avatar.jpg" style="border:1px solid black;border-radius:5px;height:160px;width:160px;">
 
                       <a class="btn btn-primary" href='/tracks/edit/<%=track['id']%>'><span class="glyphicon glyphicon-pencil"></span></a>
-                      <a class="btn btn-success" href='/tracks/view/<%=track['id']%>/<%=track['title']%>/<%=track['description']%>'><span class="glyphicon glyphicon-music"></span></a>
+                      <a class="btn btn-success" href='/tracks/view/<%=track['id']%>'><span class="glyphicon glyphicon-music"></span></a>
                       <a id="playSound" class="btn btn-info" onclick="playMedia($(this));"><span class="glyphicon glyphicon-play-circle"><audio><source src="<%= track['stream_url'] %>?client_id=<%= session['cid'] %>&secret_token=<%= track['secret_token'] %>"></audio></span></a>
                       <button class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-remove"></span>
