@@ -182,4 +182,37 @@ class SoundcloudApp < Sinatra::Base
     redirect '/viewUpload'
 
   end
+
+  get '/tracks/attach/:id' do
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+    });
+
+    track = client.get("/tracks/#{params[:id]}")
+    tags = track.tag_list;
+
+    client.put(track.uri, :track => {
+     :tag_list => "#{tags} #{session[:req_id]}"
+    });
+    "done"
+  end
+
+  get '/tracks/detach/:id' do
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+    });
+
+    track = client.get("/tracks/#{params[:id]}")
+
+    tags = (track.tag_list.split(" ") - [session[:req_id]]).join(" ");
+
+    client.put(track.uri, :track => {
+     :tag_list => "#{tags}"
+    });
+    "done"
+  end
 end
