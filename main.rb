@@ -1,16 +1,19 @@
 require 'sinatra/base'
 require "sinatra/config_file"
+require "rack-flash"
 require 'soundcloud'
 require 'hashie'
 require 'httmultiparty'
 require 'certified'
 require 'json'
+require "sinatra/formkeeper"
 
 
 class SoundcloudApp < Sinatra::Base
   register Sinatra::FormKeeper
   register Sinatra::ConfigFile
-  register Sinatra::Flash
+  # register Sinatra::Flash
+  use Rack::Flash
 
   configure do
     set :environment, :production
@@ -58,11 +61,13 @@ class SoundcloudApp < Sinatra::Base
      #need to programatically get the gdgUserID and applicationID #
      #this just shows the basic format of tagging                 #
      ##############################################################
-     testingStringNum = "2222222";
-     gdgUserID = "gdg:currentVisitorID="+testingStringNum;
-     applicationID = "gdg:applicationID="+testingStringNum;
-     tagListString = gdgUserID+" "+applicationID;
+    #  testingStringNum = "2222222";
+    #  gdgUserID = "gdg:currentVisitorID="+testingStringNum;
+    #  applicationID = "gdg:applicationID="+testingStringNum;
+    #  tagListString = gdgUserID+" "+applicationID;
 
+
+    tagListString = "#{session[:visitor_id]} #{session[:req_id]}"
      #tmpfile = tmpfile.to_s
      track = client.post('/tracks', :track => {
        :title => params[:title],
@@ -71,8 +76,6 @@ class SoundcloudApp < Sinatra::Base
        :sharing => "private",
        :tag_list => tagListString
        })
-       #puts track.tag_list
-
 
      redirect '/viewUpload'
    end
@@ -82,14 +85,13 @@ class SoundcloudApp < Sinatra::Base
       :client_id => session['cid'],
       :client_secret => session['cs'],
       :access_token => session['at']
-      })
+    })
 
-    tags = ["gdg:currentVisitorID=2222222"];
-    trackListCall = client.get('/me/tracks');
-    @trackList =  trackListCall.to_json
-    #puts @trackList;
+    trackListCall = client.get('/me/tracks')
+
     @trackList = JSON.parse((trackListCall.to_json));
-    puts @trackList;
+
+    @trackList = @trackList.reject { |t| t['tag_list'] != "#{session[:visitor_id]} #{session[:req_id]}" }
 
     @totalTracks = @trackList.length
     erb :viewUpload
@@ -166,14 +168,15 @@ class SoundcloudApp < Sinatra::Base
   end
 
 
-  get '/:client_id/:client_secret/:access_token' do
+  get '/init/:client_id/:client_secret/:access_token/:visitor_id/:req_id/:mode' do
     session['cid'] = params[:client_id];
     session['cs'] = params[:client_secret];
     session['at'] = params[:access_token];
+    session['visitor_id'] = "u" + params[:visitor_id];
+    session['req_id'] = "a" + params[:req_id];
+    session['mode'] = params[:mode];
 
     redirect '/viewUpload'
 
   end
-
-
 end
