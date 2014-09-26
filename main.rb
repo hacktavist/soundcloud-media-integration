@@ -48,28 +48,47 @@ class SoundcloudApp < Sinatra::Base
    end
 
    post '/upload' do
-     client = SoundCloud.new({
-       :client_id => session['cid'],
-       :client_secret => session['cs'],
-       :access_token => session['at']
-       })
-     tmpfile = "";
-     tmpfile = params[:file][:tempfile];
-     username = client.get('/me').username;
-     fullName = client.get('/me').full_name;
+    # create soundcloud client
+    client = SoundCloud.new({
+      :client_id => session['cid'],
+      :client_secret => session['cs'],
+      :access_token => session['at']
+    })
 
-    tagListString = "#{session[:visitor_id]} #{session[:req_id]}"
-     #tmpfile = tmpfile.to_s
-     track = client.post('/tracks', :track => {
-       :title => params[:title],
-       :description => params[:descr],
-       :asset_data => File.new(tmpfile),
-       :sharing => "private",
-       :tag_list => tagListString
-     })
+    # validation rules
+    form do
+      field :file, :present => true
+    end
 
-     redirect '/viewUpload'
-   end
+    #test form
+    if form.failed?
+      flash[:notice] = "You must choose an audio file."
+      redirect '/newUpload';
+
+    # form was successful
+    else
+      tmpfile = "";
+      tmpfile = params[:file][:tempfile]
+      name = params[:file][:filename]
+
+      # custom file extension validation
+      if !/mp3$/.match(name)
+        flash[:notice] = "Invalid File Type."
+        redirect '/newUpload';
+      else
+        tagListString = "#{session[:visitor_id]} #{session[:req_id]}"
+        track = client.post('/tracks', :track => {
+          :title => params[:title],
+          :description => params[:descr],
+          :asset_data => File.new(tmpfile),
+          :sharing => "private",
+          :tag_list => tagListString
+        })
+      end
+    end #form.failed?
+
+    redirect '/index'
+  end
 
   get '/index' do
     client = SoundCloud.new({
@@ -122,7 +141,7 @@ class SoundcloudApp < Sinatra::Base
       })
 
     client.delete('/tracks/' + params[:id]);
-    redirect '/viewUpload'
+    redirect '/index'
   end
   post '/edit/track' do
     client = SoundCloud.new({
@@ -138,7 +157,7 @@ class SoundcloudApp < Sinatra::Base
          :title => params[:title],
          :description => params[:descr]
         })
-       redirect '/viewUpload'
+       redirect '/index'
   end
   get '/tracks/view/:id' do
     client = SoundCloud.new({
@@ -152,7 +171,7 @@ class SoundcloudApp < Sinatra::Base
     track =  JSON.parse(trackListCall.to_json);
     @trackSToken = track['secret_token']
     @trackStream = track['stream_url']
-    erb :viewUploadedSound,
+    erb :indexedSound,
       :locals => {
         :id => params[:id],
         :title => track['title'],
