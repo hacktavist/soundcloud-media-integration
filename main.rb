@@ -66,7 +66,7 @@ class SoundcloudApp < Sinatra::Base
        :asset_data => File.new(tmpfile),
        :sharing => "private",
        :tag_list => tagListString
-       })
+     })
 
      redirect '/viewUpload'
    end
